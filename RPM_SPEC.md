@@ -112,6 +112,46 @@ This is a very long string. Only the first seven characters should be used. The
 first seven characters is what github ordinarily displays next to a release
 download.
 
+## Spec File Group Tag
+
+This tag really is only useful when browsing available packages. The 'official'
+groups are rather worthless, way to vague.
+
+How to effectively group packages is something that needs to be thought about.
+
+## Spec File License Tag
+
+This should always match the contents of the `license` tag in the
+`composer.json` file *and* should match what is installed in the package using
+the `%license` macro.
+
+## Spec File Buildarch Tag
+
+This should _always_ be set to `noarch` - binary packages should not be
+managed by this package repository.
+
+## Spec File URL Tag
+
+This should always match the `homepage` tag in the `composer.json` file.
+
+## Spec File Summary Tag
+
+In *most* cases this should match the contents of the `description` tag in the
+`composer.json` file. The name of the package generally does not belong in that
+tag, and sometimes what is in the `composer.json` file is too long for a
+summery in an RPM spec file.
+
+## Spec File Description Tag
+
+Whenever the creator of the upstream package has gone through the trouble of
+writing a proper description at the package homepage, that generally should be
+used.
+
+The description should wrap at 80 characters and generally should only use
+ASCII characters.
+
+Translations would be nice.
+
 ## TODO
 
 Write more
