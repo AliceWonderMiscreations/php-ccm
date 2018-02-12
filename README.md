@@ -11,7 +11,7 @@ from the perspective of a system administrator.
 
 ### The Trust Issue
 
-When installing something via Composure, it brings in numerous packages from
+When installing something via Composer, it brings in numerous packages from
 many different sources. These packages are not authenticated against
 cryptography signatures I have chosen to trust, and that scares me. I prefer
 actual package management (like RPM) where I the packages must be signed by a
@@ -33,7 +33,7 @@ in cases where the developer did not.
 I suspect that a large number if not the majority of frequently used libraries
 that are in the Composer ecosystem have developers who try to practice safe
 coding practices. However this certainly is not always the case, and when you
-install software via composure that ends up pulling in 20+ other libraries,
+install software via Composer that ends up pulling in 20+ other libraries,
 there is a good chance some of them have poor quality code that will cause
 problems.
 
@@ -63,7 +63,7 @@ then one package update secures every web application that uses it.
 Fedora / EPEL already implements a solution to this problem, with packages
 maintained largely by the legendary Remi Collet.
 
-They package Composure packages as globally installed RPM packages. Since I use
+They package Composer packages as globally installed RPM packages. Since I use
 CentOS with the EPEL package repository, I should just be able to use those
 packages, right?
 
