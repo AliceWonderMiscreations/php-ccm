@@ -1,6 +1,22 @@
 %define pkgvendor sabre
 %define pkgname xml
 
+%define pkgversion 2.1.0
+# Increment below by one when tweaking the spec file but the version has not
+#  changed and the security patch release has not changed
+%define pkgtweakv 0
+
+# Increment below by one when applying a security patch to the current version
+#  or when switching from pre-release to official release of a version.
+# Reset to 1 if updating the version (or 0 if updating to a pre-release of
+#  a new version)
+%define pkgsecurityv 0
+
+# When there is a need for additional information in the release tag, uncomment
+#  below to define it. The definition of this macro should always start with a
+#  dot.
+#  %%define pkgoptother .whatever
+
 # Do not change these
 %define basedir %{_datadir}/ccm
 %define _defaultdocdir %{basedir}/doc
@@ -12,8 +28,8 @@ Name:		php-ccm-%{pkgvendor}-%{pkgname}-local
 Name:		php-ccm-%{pkgvendor}-%{pkgname}
 %define pkginstalldir %{basedir}/stable/%{pkgvendor}/%{pkgname}
 %endif
-Version:	2.1.0
-Release:	0.ccm.0
+Version:	%{pkgversion}
+Release:	%{pkgsecurityv}.ccm.%{pkgtweakv}%{?pkgoptother}
 BuildArch:	noarch
 Summary:	An XML library that you may not hate
 

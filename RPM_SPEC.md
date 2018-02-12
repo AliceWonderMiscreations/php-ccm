@@ -1,5 +1,5 @@
 RPM Spec File Standard
-----------------------
+======================
 
 This standard is still in the process of being created. It will go through
 changes as needed, initially by me, and then hopefully be reviewed by other
@@ -49,6 +49,8 @@ With respect release versions that have a letter as part of the version number
 the version tag, but the scheme used by the developer would have to be looked
 at.
 
+This should be defined in the `%{pkgversion}` macro.
+
 ## Spec File Release Tag
 
 I propose the following specification *always* be used for the Release tag:
@@ -72,6 +74,8 @@ When a spec file switches from a preview release to an official release, it
 will also be bumped up by one (e.g. from `0` to `1` if there were no needed
 security updates to the preview release)
 
+This should be defined in the `%{pkgsecurityv}` macro.
+
 ### Hard-coded dist tag
 
 Right now this is `ccm` but when the official name of this project is chosen it
@@ -88,6 +92,8 @@ This should be a base 10 integer and should be incremented whenever the spec
 file is tweaked for a new build. Whenever the Security Patch Release is
 incremented, the Tweak Version should be reset to 0.
 
+This should be defined in the `%{pkgtweakv}` macro.
+
 ### Optional Other
 
 Usually this will not be used. Where it can be used is for things like the git
@@ -96,7 +102,9 @@ for his or her personal modifications.
 
 The 'Optional Other' will ordinarily not make any difference when RPM compares
 packages to see which is newer, so when changing to a different git checkout
-revision, the 'Tweak Version' should be incrememted.
+revision, the `pkgtweakv` should be incrememted.
+
+This should be defined in the `%{pkgoptother}` macro.
 
 #### Git Checkout Version
 
