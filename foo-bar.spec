@@ -89,4 +89,4 @@ mv tests %{buildroot}%{pkginstalldir}/
 
 %changelog
 * Sun Feb 13 2018 Alice Wonder <buildmaster@librelamp.com> - 1.2.3-1.ccm.1
-- Initial spec file
+- Initial spec file, modeled after sabre-xml spec file.
