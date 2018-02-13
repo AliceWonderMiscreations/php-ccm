@@ -15,10 +15,10 @@ The following macros need to be defined in the RPM spec file, generally at the
 top.
 
 * `pkgvendor`  
-The vendor of what is being packaged, e.g. `sabre`
+The vendor of what is being packaged, e.g. `sabre`. This should _always_ be lower case.
 
 * `pkgname`  
-The name of what is being packaged, e.g. `xml`
+The name of what is being packaged, e.g. `xml`. This should _always_ be lower case.
 
 * `pkgversion`  
 The version of the package as it would be defined in a `composer.json` file
@@ -49,20 +49,35 @@ RPM spec files are never installed as part of the package anyway, users do not
 see them unless they have legitimate cause to need to edit them. The shorter
 length makes it easier to deal with for those who are creating the packages.
 
-## Spec File Name Scheme
+## Spec File Name Tag
 
 Two macros are defined at the beginning of the spec file: `pkgvendor` and
 `pkgname`.
 
-These should be set to correspong to how Composer references the package
-(as `pkgvendor`/`pkgname`) and should be lower case.
+This should almost always be defined within the following `%if` block:
 
-## Spec File Version Scheme
+    %if 0%{?_local_build}
+    Name: php-ccm-%{pkgvendor}-%{pkgname}-local
+    %define pkginstalldir %{basedir}/local/%{pkgvendor}/%{pkgname}
+    %else
+    Name: php-ccm-%{pkgvendor}-%{pkgname}
+    %define pkginstalldir %{basedir}/stable/%{pkgvendor}/%{pkgname}
+    %endif
+
+In the cases where a package is being built for the development branch, then
+the none local build should append `-devel` to the `Name` tag and the macro
+defining the `pkginstalldir` should use `/devel` in place of `/stable`.
+
+## Spec File Version Tag
+
+Most of the time this should just be defined to the `%{pkgversion}` macro:
+
+    Version: %{pkgversion}
 
 I really *really* hope we can avoid versions that are not standard groups of
 base 10 integers delimited by periods.
 
-Unfortunately sometimes package creators will add a letter or the worf `pre`
+Unfortunately sometimes package creators will add a letter or the with `pre`
 to the end of the version number. As a packager I effing hate it when they
 do that.
 
@@ -84,9 +99,14 @@ This should be defined in the `%{pkgversion}` macro.
 
 I propose the following specification *always* be used for the Release tag:
 
-1. Security Patch Release
-2. Hard-coded dist tag
-3. Tweak Version
+1. _Security Patch Release_  
+  This is defined in the `%{pkgsecurityv}` macro.
+
+2. __Hard-coded dist tag__
+
+3. __Tweak Version__  
+  This is defined in the `%{pkgtweakv}` macro.
+
 4. Optional Other
 
 A dot will separate those portions, as is standard.
