@@ -1,4 +1,5 @@
 MIT License
+===========
 
 Copyright (c) 2018 Alice Wonder
 
@@ -20,7 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----
+## RPM Spec File Note
+
+When re-using an RPM spec file elsewhere, previous `%changelog` entries *must*
+be preserved.
+
+## License Scope
 
 This license applies to the RPM spec files and related files, it does not apply
 to software built with the RPM spec files.
