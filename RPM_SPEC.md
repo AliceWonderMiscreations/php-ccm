@@ -99,7 +99,7 @@ This should be defined in the `%{pkgversion}` macro.
 
 I propose the following specification *always* be used for the Release tag:
 
-1. _Security Patch Release_  
+1. __Security Patch Release__  
   This is defined in the `%{pkgsecurityv}` macro.
 
 2. __Hard-coded dist tag__
@@ -107,7 +107,7 @@ I propose the following specification *always* be used for the Release tag:
 3. __Tweak Version__  
   This is defined in the `%{pkgtweakv}` macro.
 
-4. Optional Other
+4. __Optional Other__
 
 A dot will separate those portions, as is standard.
 
