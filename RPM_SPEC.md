@@ -111,10 +111,19 @@ I propose the following specification *always* be used for the Release tag:
 
 A dot will separate those portions, as is standard.
 
+Using that standard, the spec file `Release` tag would be defined as such:
+
+    Release: %{pkgsecurityv}.ccm.%{pkgtweakv}%{?pkgoptother}
+
+As long as the `%{pkgsecurity}` or `%{pkgtweakv}` integers are always
+incremented when an updated spec file with the same `Version` is built, the
+`%{?pkgoptother}` macro is strictly informational and will not impact how RPM
+determines if a package is the newer version.
+
 ### Security Patch Release
 
-This will be a base 10 integer. When a security patch is applied to a version
-of the package, this gets bumped up by one.
+This will be a non-negative base 10 integer. When a security patch is applied
+to a version of the package, this gets incremented by one.
 
 For preview releases it will start at `0` and for official releases that did
 not have a preview release it will start at `1`.
@@ -135,10 +144,13 @@ release tag should never be needed.
 However, it should not be left out, it should be easy to determine where a
 package installed on a system came from by looking at the release tag.
 
+I really want to avoid situations where an installed package differs based upon
+the version of PHP it is intended to be used with.
+
 ### Tweak Version
 
-This should be a base 10 integer and should be incremented whenever the spec
-file is tweaked for a new build. Whenever the Security Patch Release is
+This should be a non-negative base 10 integer and should be incremented whenever
+the spec file is tweaked for a new build. Whenever the Security Patch Release is
 incremented, the Tweak Version should be reset to 0.
 
 This should be defined in the `%{pkgtweakv}` macro.
@@ -153,7 +165,7 @@ The 'Optional Other' will ordinarily not make any difference when RPM compares
 packages to see which is newer, so when changing to a different git checkout
 revision, the `pkgtweakv` should be incrememted.
 
-This should be defined in the `%{pkgoptother}` macro.
+This should be defined in the `%{pkgoptother}` macro if defined at all.
 
 #### Git Checkout Version
 
@@ -258,7 +270,7 @@ For script library requirements like `sabre/uri` our RPM spec file should make
 sure it is available within the `php-ccm` namespace, or out autoloader may not
 be able to find it.
 
-## Spec File Requires Tag
+## Spec File Provides Tag
 
 Every spec file should have
 
@@ -417,11 +429,3 @@ It _MUST_ also include the licende and the `composer.json` file.
 Initially I am not creating any subpackages but in the future, things like the
 `tests` sub-directories that are necessary to run the code should be split out
 into subpackages.
-
-
-
-
-
-
-
-Write more
