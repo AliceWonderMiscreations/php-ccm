@@ -42,7 +42,7 @@ Source0:	%{pkgname}-%{version}.tar.gz
 Source20:	%{pkgvendor}-%{pkgname}-%{version}.sha256
 
 #BuildRequires:	
-Requires:	php >= 7.0
+Requires:	php(language) >= 7.0
 Requires:	php-ccm(sabre/uri) >= 1.0
 Requires:	php-ccm(sabre/uri) < 3.0.0
 Requires:	php-xmlwriter
@@ -50,7 +50,7 @@ Requires:	php-xmlreader
 Requires:	php-dom
 Requires:	libxml2 >= 2.6.20
 
-Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{version}
+Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{pkgversion}
 
 %description
 If you are writing or consuming API's in PHP, chances are that you need to work

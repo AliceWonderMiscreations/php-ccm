@@ -42,9 +42,9 @@ Source0:	%{pkgname}-%{version}.tar.gz
 Source20:	%{pkgvendor}-%{pkgname}-%{version}.sha256
 
 #BuildRequires:	
-Requires:	php >= 7.0
+Requires:	php(language) >= 7.0
 
-Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{version}
+Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{pkgversion}
 
 %description
 sabre/uri is a lightweight library that provides several functions for working

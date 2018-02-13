@@ -43,9 +43,9 @@ Source0:	Base-%{version}.tar.gz
 Source20:	%{pkgvendor}-%{pkgname}-%{version}.sha256
 
 #BuildRequires:	
-Requires:	php
+Requires:	php(language)
 
-Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{version}
+Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{pkgversion}
 
 %description
 description goes here

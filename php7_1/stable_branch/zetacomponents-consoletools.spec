@@ -43,11 +43,11 @@ Source0:	ConsoleTools-%{version}.tar.gz
 Source20:	%{pkgvendor}-%{pkgname}-%{version}.sha256
 
 #BuildRequires:	
-Requires:	php
+Requires:	php(language)
 Requires:	php-ccm(zetacomponents/base) >= 1.8
 Requires:	php-ccm(zetacomponents/base) < 2.0
 
-Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{version}
+Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{pkgversion}
 
 %description
 A set of classes to do different actions with the console (also called shell).
