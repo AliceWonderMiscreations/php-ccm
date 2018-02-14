@@ -34,6 +34,8 @@ to be defined in an array, and the array can then be fed to the $CCM object
 using the `filelist` function:
 
     $arr = array('/libraries/sabre/uri/functions.php');
+    $arr[] = '/libraries/sabre/xml/Deserializer/functions.php';
+    $arr[] = '/libraries/sabre/xml/Serializer/functions.php';
     $CCM->filelist($arr);
 
 Every script defined in the array will be loaded, assuming it can be found.
@@ -54,6 +56,7 @@ do not need to do anything special.
 To register the auto-loader:
 
     spl_autoload_register(function ($class) {
+      global $CCM;
       $CCM->loadClass($class);
     });
 
@@ -61,6 +64,7 @@ In the event your web application uses any PEAR modules, for your convenience
 there is an auto-loader for that as well:
 
     spl_autoload_register(function ($class) {
+      global $CCM;
       $CCM->pearClass($class);
     });
 
@@ -76,6 +80,7 @@ that contain the SQL password.
 For your convenience, this application supports autoloading them too:
 
     spl_autoload_register(function ($class) {
+      global $CCM;
       $CCM->localSystemClass($class);
     });
 
