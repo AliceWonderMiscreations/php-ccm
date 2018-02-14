@@ -14,7 +14,7 @@ from the perspective of a system administrator.
 When installing something via Composer, it brings in numerous packages from
 many different sources. These packages are not authenticated against
 cryptography signatures I have chosen to trust, and that scares me. I prefer
-actual package management (like RPM) where I the packages must be signed by a
+actual package management (like RPM) where the packages must be signed by a
 source I have specifically chosen to trust to package the the dependency.
 
 ### Dependency Maintenance Issue
@@ -68,7 +68,8 @@ CentOS with the EPEL package repository, I should just be able to use those
 packages, right?
 
 Wrong. The issue is CentOS ships with PHP 5.6.x and I have upgraded my PHP to
-PHP 7.1.x. As a result not all of the versions packages in EPEL will work.
+PHP 7.1.x. As a result not all of the versions packaged in EPEL will work for
+me.
 
 I'm also not using the software collections to get a newer LAMP stack, I am
 building my LAMP stack against LibreSSL. Thus if they package any of the
@@ -86,7 +87,7 @@ What I want to create is a solution for UN\*X operating systems with arch
 independent libraries within a specific structure of /usr/share on the
 filesystem.
 
-I do not know if that is the appropriate place on MacOs \ OS X or not, nor what
+I do not know if that is the appropriate place on MacOs / OS X or not, nor what
 package manager would be used on that platform to manage them, but that
 platform is generally a *development* platform rather than a *production*
 platform, developers can just use Composer itself and I suspect most of them
@@ -99,7 +100,8 @@ that is why I want to be capable of doing.
 
 There are generally three different major versions of PHP supported by the PHP
 developers at any given time. At present, there are actually four as the PHP
-5.6 branch has been given a little extra life.
+5.6 branch has been given a little extra life, though I think it is actually
+only getting security fixes and not bug fixes.
 
 I want to support packages for all PHP supported versions, in different trees,
 as sometimes the library version of dependency packages is restricted to
@@ -114,29 +116,28 @@ currently being used in the LibreLAMP project I both maintain and use.
 
 The package tree will be within something *like* /usr/share/ccm and other than
 license files, all files will be installed into that directory, no files will
-be installed outside that directory. That is avoid package conflicts with any
+be installed outside that directory. That is to avoid package conflicts with any
 packages installed by the operating system vendor packages.
 
-Within the package tree, there will be three different available branches:
+Within the package tree, there will be three different available branches
+(similar concept to PEAR channels):
 
 * stable
 * local
 * devel
 
-The purpose of the stable branch is to contain the most recent *released*
+The purpose of the `stable` branch is to contain the most recent *released*
 version of a library with Composer install that works in the specified version
 of PHP.
 
-The purpose of the local branch is to contain older versions of a package that
+The purpose of the `local` branch is to contain older versions of a package that
 may be needed by a particular application or library.
 
-The purpose of the devel branch is to contain development versions that are not
-yet released as final packages.
+The purpose of the `devel` branch is to contain development versions that are
+not yet released as final packages.
 
-Web applications that work just fine with the stable versions can just add the
-stable branch to their `phpinclude` path. Web applications that where the
-stable version does not work can add the local and/or development branch to
-their `phpinclude` path *before* the stable branch.
+Web applications can then specify what order they want the autoloader to search
+through the branches to find the class that is needed.
 
 The CCM package repository itself will only include packages for the stable
 branch but the git will include RPM spec files for the decelopment branch and
@@ -154,8 +155,11 @@ The result will be: `php-ccm-foo-bar-local-2.2.7-3.ccm.17.noarch.rpm`
 
 The system administrator can install that and the files will go in the local
 branch, it will not conflict with a new version in the stable branch. Then as
-long as imaginemail is configured to have the local branch in its `phpinclude`
-path *before* the stable branch, it will work.
+long as imaginemail is configured to search the local branch for classes
+*before* the stable branch, it will work.
+
+The search order can be configured on a per-web application basis without
+needing to change the `phpinclude` path.
 
 ### Security Patch Notification
 
