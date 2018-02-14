@@ -4,7 +4,7 @@
 %define pkgversion 2.1.0
 # Increment below by one when tweaking the spec file but the version has not
 #  changed and the security patch release has not changed
-%define pkgtweakv 0
+%define pkgtweakv 1
 
 # Increment below by one when applying a security patch to the current version
 #  or when switching from pre-release to official release of a version.
@@ -23,11 +23,12 @@
 
 %if 0%{?_local_build}
 Name:		php-ccm-%{pkgvendor}-%{pkgname}-local
-%define pkginstalldir %{basedir}/local/%{pkgvendor}/%{pkgname}
+%define branchbase %{basedir}/local/libraries
 %else
 Name:		php-ccm-%{pkgvendor}-%{pkgname}
-%define pkginstalldir %{basedir}/stable/%{pkgvendor}/%{pkgname}
+%define branchbase %{basedir}/stable/libraries
 %endif
+%define pkginstalldir %{branchbase}/%{pkgvendor}/%{pkgname}
 Version:	%{pkgversion}
 Release:	%{pkgsecurityv}.ccm.%{pkgtweakv}%{?pkgoptother}
 BuildArch:	noarch
@@ -85,19 +86,20 @@ done
 
 %install
 mkdir -p %{buildroot}%{pkginstalldir}
-mv lib %{buildroot}%{pkginstalldir}/
-mv tests %{buildroot}%{pkginstalldir}/
-mkdir -p %{buildroot}%{pkginstalldir}/bin
-
+mv lib/* %{buildroot}%{pkginstalldir}/
 
 %files
 %defattr(-,root,root,-)
 %license LICENSE
 %doc CHANGELOG.md README.md LICENSE composer.json
+%dir %{branchbase}/%{pkgvendor}
 %{pkginstalldir}
 
 
 
 %changelog
+* Wed Feb 14 2018 Alice Wonder <buildmaster@librelamp.com> - 2.1.0-0.ccm.1
+- Do not install tests, install contents of lib/ dir directly (PEAR style)
+
 * Sun Feb 11 2018 Alice Wonder <buildmaster@librelamp.com> - 2.1.0-0.ccm.0
 - Initial spec file
