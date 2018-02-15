@@ -35,8 +35,38 @@ Should always be set to `%{_datadir}/ccm`
 * `_defaultdocdir`  
 Should always be set to `%{basedir}/doc`
 
+* `branchbase`  
+This is set to the `libraries` directory within the branch. For web
+applications (like Roundcube Mail) it would be set to the `applications`
+directory within the branch.
+
 * `pkginstalldir`  
-Should be defined to the a vendor/package directory within the `%{basedir}`
+Should be defined to the a vendor/package directory within the `%{basedir}` and
+is a first level sub-directory of the `branchbase`.
+
+### The lower case thing
+
+The `pkgvendor` and `pkgname` macros define directories on the file system.
+There are three types of file systems:
+
+1. Case Sensitive (and thus also case preserving) - Most modern UN\*X file
+systems fit this type, but not all do.
+
+2. Case Insensitive but Case Preserving - A few UN\*X file systems fit this
+type, HFS+ that is sometimes used with Mac OS X is an example.
+
+3. Case Insensitive. Not sure any modern UN\*X file systems use them but the
+FAT32 file system historically used on Windows is an example.
+
+To make things ‘just work’ the named of directories on UN\*X systems usually
+are just simply always lower case. They do not have to be, but that is how it
+has been done for years.
+
+This is why I prefer the directory names for the vendor and package names to be
+lower case.
+
+Within the package directory itself, what the developer chose to do should be
+preserved so the lower case UN\*X tradition is not enforced beyond that level.
 
 ## Naming of the Spec File Scheme
 
@@ -58,11 +88,12 @@ This should almost always be defined within the following `%if` block:
 
     %if 0%{?_local_build}
     Name: php-ccm-%{pkgvendor}-%{pkgname}-local
-    %define pkginstalldir %{basedir}/local/%{pkgvendor}/%{pkgname}
+    %define branchbase %{basedir}/local/libraries
     %else
     Name: php-ccm-%{pkgvendor}-%{pkgname}
-    %define pkginstalldir %{basedir}/stable/%{pkgvendor}/%{pkgname}
+    %define branchbase %{basedir}/stable/libraries
     %endif
+    %define pkginstalldir %{branchbase}/%{pkgvendor}/%{pkgname}
 
 In the cases where a package is being built for the development branch, then
 the none local build should append `-devel` to the `Name` tag and the macro
@@ -379,27 +410,42 @@ The spec file will define the following macros:
     
     %if 0%{?_local_build}
     Name: php-ccm-%{pkgvendor}-%{pkgname}-local
-    %define pkginstalldir %{basedir}/local/%{pkgvendor}/%{pkgname}
+    %define branchbase %{basedir}/local/libraries
     %else
     Name: php-ccm-%{pkgvendor}-%{pkgname}
-    %define pkginstalldir %{basedir}/stable/%{pkgvendor}/%{pkgname}
+    %define branchbase %{basedir}/stable/libraries
     %endif
+    %define pkginstalldir %{branchbase}/%{pkgvendor}/%{pkgname}
 
 With the exception of documentation files and shell utilities, everything should
 be installed within the defined `%{pkginstalldir}` macro.
 
-Okay I am seriously thinking about adding a `/Library` or `/Application` between
-the `%{basedir}` and the `{/local|/stable|/devel}` part of the macro definition
-but I have not done that yet. The idea being reusable code would go into
-Library for the `phpinclude` path, and applications (like Roundcube) would go
-into the Application directory so their stuff does not end up in the global
-`phpinclude` path.
-
-Anyway, the point is everything needs to be packaged *inside* the php-ccm
-`%{basedir}` macro which is `%{_datadir}/ccm` (`/usr/share/ccm`)
-
 The `ccm` will likely change to something else when I have decided upon a
 better name, `ccm` is just the working name for developing this idea.
+
+### The `lib` or `src` directory
+
+The layout used by Composer, the top level of a package has the `README`,
+`LICENSE`, etc. that we package separately. Within the top level, there usually
+is a `tests` directory that has no place on a production server, and either a
+`lib` or `src` directory that has the actual class files.
+
+Those class files are what we are interested in packaging, and they should be
+installed directly into the `pkginstalldir` directory so that the CCM
+`\AliceWonderMiscreations\CCM\ClassLoader` class can easily find them without
+needing to worry about the `composer.json` defined directory within the package
+directory that actually has the classes we need.
+
+The Autoloader is a lot simpler without needing to worry about whether the
+class files are in `lib/` or `src/` or `whatever/`. I understand the need to do
+it when there is also a `vendor/` directory with dependencies, but that is
+exactly what this project was created to avoid.
+
+### Developer Files
+
+Developer files such as the `tests` directory should not be installed. Those
+who have need of the development environment for a package should just use
+Composer itself to get what they need.
 
 ## The `%files` section of the RPM spec file
 
@@ -424,8 +470,19 @@ The third line should package documentation using the `%doc` macro, e.g.
 
 It _MUST_ also include the licende and the `composer.json` file.
 
-### Subpackages
+The RPM package should own the vendor directory. This way when all packages
+from a particular vendor have been removed, the vendor directory will also be
+removed:
 
-Initially I am not creating any subpackages but in the future, things like the
-`tests` sub-directories that are necessary to run the code should be split out
-into subpackages.
+    %dir %{branchbase}/%{pkgvendor}
+
+Finally the RPM package should own the package directory and everything that is
+inside it:
+
+    %{pkginstalldir}
+
+## Subpackages
+
+This will be covered when needed.
+
+

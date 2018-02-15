@@ -29,6 +29,7 @@ Name:		php-ccm-%{pkgvendor}-%{pkgname}
 %define branchbase %{basedir}/stable/libraries
 %endif
 %define pkginstalldir %{branchbase}/%{pkgvendor}/%{pkgname}
+
 Version:	%{pkgversion}
 Release:	%{pkgsecurityv}.ccm.%{pkgtweakv}%{?pkgoptother}
 BuildArch:	noarch

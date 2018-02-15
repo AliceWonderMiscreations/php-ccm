@@ -25,11 +25,13 @@
 
 %if 0%{?_local_build}
 Name:		php-ccm-%{pkgvendor}-%{pkgname}-local
-%define pkginstalldir %{basedir}/local/%{pkgvendor}/%{pkgname}
+%define branchbase %{basedir}/local/libraries
 %else
 Name:		php-ccm-%{pkgvendor}-%{pkgname}
-%define pkginstalldir %{basedir}/stable/%{pkgvendor}/%{pkgname}
+%define branchbase %{basedir}/stable/libraries
 %endif
+%define pkginstalldir %{branchbase}/%{pkgvendor}/%{pkgname}
+
 Version:	%{pkgversion}
 Release:	%{pkgsecurityv}.ccm.%{pkgtweakv}%{?pkgoptother}
 BuildArch:	noarch
@@ -75,14 +77,14 @@ done
 
 %install
 mkdir -p %{buildroot}%{pkginstalldir}
-mv lib %{buildroot}%{pkginstalldir}/
-mv tests %{buildroot}%{pkginstalldir}/
+mv lib/* %{buildroot}%{pkginstalldir}/
 
 
 %files
 %defattr(-,root,root,-)
 %license LICENSE
 %doc CHANGELOG.md README.md LICENSE composer.json
+%dir %{branchbase}/%{pkgvendor}
 %{pkginstalldir}
 
 

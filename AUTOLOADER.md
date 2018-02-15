@@ -18,7 +18,7 @@ class:
     $CCM = new \AliceWonderMiscreations\CCM\ClassLoader();
 
 Within the `/usr/share/ccm/` root, by default the class looks for
-matchen within the `local` tree first, then the `stable` tree, then the
+matches within the `local` tree first, then the `stable` tree, then the
 `devel` tree. If the web application needs to change that search order, the
 order needs to be changed within the application auto-loader script *before*
 anything else:
