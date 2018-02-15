@@ -301,6 +301,32 @@ For script library requirements like `sabre/uri` our RPM spec file should make
 sure it is available within the `php-ccm` namespace, or out autoloader may not
 be able to find it.
 
+### PEAR Dependency Notes
+
+The RPM spec file should not `Requires:` PEAR packages. Many system
+administrators prefer to use the command line `pear` utility to manage PEAR
+libraries on their system.
+
+When packaging a library or application that depends upon PEAR packages, a file
+called PEAR_REQUIREMENTS.txt should be created listing the required and
+suggested PEAR dependencies, along with version notes, and be packaged with the
+`%doc` macro. That will allow system administrators to install them.
+
+The autoloader for PEAR packages will try to autoload PEAR modules that are
+installed within the `phpinclude` path first, and when that fails, it will try
+to find them in the following directories:
+
+1. `/usr/share/ccm/pear`
+2. `/usr/local/share/pear`
+3. `/usr/share/pear`
+
+In the future I hope to provide a utility that will allow a system
+administrator to run a command that will install any needed PEAR modules inside
+the `/usr/share/ccm/pear` directory for system administrators who would prefer
+to keep PEAR modules needed for the CCM ecosystem inside the CCM ecosystem.
+
+This project will not package PEAR modules.
+
 ## Spec File Provides Tag
 
 Every spec file should have
