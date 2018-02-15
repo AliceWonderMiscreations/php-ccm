@@ -1,8 +1,9 @@
 The PHP-CCM AutoLoader
 ======================
 
-As of today (2018 February 14th) the autoloader is not yet in this git
-repository. I am still working on it and cleaning it up a bit.
+The AutoLoader in its present state can be found in the file `ClassLoader.php`
+
+It is not yet well tested.
 
 My goal with it is to ‘Keep It Simple, Silly’ - something that annoys the
 hell out of me with many auto-loaders out there.
