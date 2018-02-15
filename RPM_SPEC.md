@@ -325,6 +325,10 @@ administrator to run a command that will install any needed PEAR modules inside
 the `/usr/share/ccm/pear` directory for system administrators who would prefer
 to keep PEAR modules needed for the CCM ecosystem inside the CCM ecosystem.
 
+Such a utility would scan the `composer.json` files within the
+`/usr/share/ccm/doc` directory to find what is needed and then offer to use the
+system `/usr/bin/pear` utility to fetch what is needed and install them.
+
 This project will not package PEAR modules.
 
 ## Spec File Provides Tag
