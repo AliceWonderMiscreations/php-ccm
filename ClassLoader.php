@@ -35,6 +35,10 @@ class ClassLoader
     protected $classMap = array();
     // branch search order within $ccmBase
     public $ccmBranchOrder = array('local','stable');
+    // cache the path?
+    protected $cachePath = false;
+    // key for cache
+    protected $cacheKey = '';
     // the version number
     private $vversion = '0.0.0';
 
@@ -44,11 +48,44 @@ class ClassLoader
     public function version() {
         return $this->vversion;
     }
+    
+    // If caching is enabled and file location of class is
+    //  cached, loads from file rather than searching for file
+    protected function cacheCheck($class) {
+      if($this->cachePath) {
+        $string = $this->cacheKey . $class;
+        $hkey = hash('ripemd160', $string);
+        $hkey = substr($hkey, 5, 14);
+        if($filename = apcu_fetch($hkey)) {
+          if(file_exists($filename)) {
+            require_once($filename);
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    
+    // If caching is enabled, caches the location on the
+    //  filesystem associated with the class
+    protected function wrapRequire($class, $filename) {
+      if($this->cachePath) {
+        $string = $this->cacheKey . $class;
+        $hkey = hash('ripemd160', $string);
+        $hkey = substr($hkey, 5, 14);
+        // cache for about three hours
+        //  randomizes cache time to spread out needed
+        //  reloads as cache expires. Overthinking things??
+        $cacheTime = 10800 + rand(0,1800);
+        apcu_store($hkey, $filename, $cacheTime);
+      }
+      require_once($filename);
+    }
 
     /* Loads a file using full path so phpinclude directory is not needed.
        Loads withing the /usr/share/ccm root according to specified branch
        unless second argument is set to true */
-    protected function loadFile($path, $full = false) {
+    protected function loadFile($path, $class='', $full = false) {
         if(substr($path, 0, 1) !== "/") {
             $path = "/" . $path;
         }
@@ -59,7 +96,11 @@ class ClassLoader
                 $fullpath = $this->ccmBase . $branch . $path;
             }
             if(file_exists($fullpath)) {
-                require_once($fullpath);
+                if(strlen($class) > 0) {
+                    $this->wrapRequire($class, $fullpath);
+                } else {
+                    require_once($fullpath);
+                }
                 return;
             }
         }
@@ -105,6 +146,9 @@ class ClassLoader
   
     /* loads a library class within the ccm root */
     public function loadClass($class) {
+        if($this->cacheCheck($class)) {
+            return;
+        }
         if(array_key_exists($class, $this->classMap)) {
             $path = $this->classMap($class);
             if(loadFile($path)) {
@@ -126,7 +170,7 @@ class ClassLoader
 
         foreach($this->suffixArray as $suffix) {
             $path = $subpath . $suffix;
-            if($this->loadFile($path)) {
+            if($this->loadFile($path, $class)) {
                 return;
             }
         }
@@ -141,7 +185,7 @@ class ClassLoader
             } else {
                 foreach($this->pearPathArray as $prefix) {
                     $fullpath = $prefix . $file;
-                    if($this->loadFile($fullpath, true)) {
+                    if($this->loadFile($fullpath, $class, true)) {
                         return;
                     }
                 }
@@ -163,7 +207,13 @@ class ClassLoader
         }
     }
 
-    public function __construct() {
+    public function __construct($string="") {
+        if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+            if(strlen($string) > 0) {
+                $this->cachePath = true;
+                $this->cacheKey = hash('ripemd160', $string);
+            }
+        }
     }
 }
 ?>
