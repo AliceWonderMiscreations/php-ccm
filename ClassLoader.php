@@ -17,7 +17,7 @@
 /* I attempt to *mostly* comply with PSR-2 
      but this class is NOT intended to loaded with an auto-loader, it
      is an auto-loader, so it is not installed in a directory
-     structure for PSR-4 compliance */
+     structure for easy PSR-4 compliance */
 
 namespace AliceWonderMiscreations\CCM;
 
@@ -112,8 +112,13 @@ class ClassLoader
             }
         }
         $arr = explode("\\", $class);
-        if(count($arr) < 3) {
-            return;
+        $j = count($arr);
+        if($j < 3) {
+            if($j === 2) {
+                $arr[] = $arr[1];
+            } else {
+                return;
+            }
         }
         $arr[0] = strtolower($arr[0]);
         $arr[1] = strtolower($arr[1]);
