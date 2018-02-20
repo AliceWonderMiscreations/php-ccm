@@ -1,13 +1,13 @@
-# php-ccm
-Composer Class Manager
+Composer Class Manager (CCM)
+============================
 
-This project is not ready for public consumption and when it is, the name will
-change.
+This project is not ready for public consumption.
 
 What this is about, there are several things about Composer that I do not like
 from the perspective of a system administrator.
 
-## The Problem I Am Trying To Solve
+The Problems I Am Trying To Solve
+---------------------------------
 
 ### The Trust Issue
 
@@ -58,7 +58,8 @@ Composer likes to put dependencies inside the project directory. That has the
 same issues static linking has. If the dependencies are globally installed,
 then one package update secures every web application that uses it.
 
-## The Fedora / EPEL Solution
+The Fedora / EPEL Solution
+--------------------------
 
 Fedora / EPEL already implements a solution to this problem, with packages
 maintained largely by the legendary Remi Collet.
@@ -81,7 +82,8 @@ not right for some others too.
 Also my packaging solution is a slightly different philosophy from that of Remi
 Collet. Not better, just different.
 
-## My Solution to the Problem
+The CCM Solution to the Problem
+-------------------------------
 
 What I want to create is a solution for UN\*X operating systems with arch
 independent libraries within a specific structure of /usr/share on the
@@ -93,10 +95,14 @@ platform is generally a *development* platform rather than a *production*
 platform, developers can just use Composer itself and I suspect most of them
 will continue to do so.
 
-What I want is the ability to rsync the install directory from one platform
+What I want is the ability to `rsync` the install directory from one platform
 to a completely different platform and have it "just work" as long as the
 version of PHP is the same. I am not saying that is a good idea, just that
 that is why I want to be capable of doing.
+
+It may actually be a good to not run this project on the production system but
+simply `rsync` from a test platform to the development when things work as they
+are intended, but that is a choice for the system administrator to make.
 
 There are generally three different major versions of PHP supported by the PHP
 developers at any given time. At present, there are actually four as the PHP
@@ -112,19 +118,21 @@ support the version of PHP that ships with the most recent version of RHEL even
 if that version is not technically supported by upstream PHP.
 
 Right now I am only concerned about PHP 7.1 as that is the version of PHP
-currently being used in the LibreLAMP project I both maintain and use.
+currently being used in the [LibreLAMP](https://librelamp.com/) project I both
+maintain and use.
 
-The package tree will be within something *like* /usr/share/ccm and other than
+The package tree for CCM will be within something /usr/share/ccm and other than
 license files, all files will be installed into that directory, no files will
 be installed outside that directory. That is to avoid package conflicts with any
-packages installed by the operating system vendor packages.
+packages installed by the operating system vendor packages and to allow rsync
+from a test server to the production server.
 
-Within the package tree, there will be three different available branches
-(similar concept to PEAR channels):
+Within the package tree, there will be four different available branches:
 
-* stable
 * local
+* stable
 * devel
+* custom
 
 The purpose of the `stable` branch is to contain the most recent *released*
 version of a library with Composer install that works in the specified version
@@ -136,11 +144,15 @@ may be needed by a particular application or library.
 The purpose of the `devel` branch is to contain development versions that are
 not yet released as final packages.
 
+The purpose of the `custom` branch is to allow installation of class libraries
+and applications that are not generally released to the public through
+Composer.
+
 Web applications can then specify what order they want the autoloader to search
 through the branches to find the class that is needed.
 
 The CCM package repository itself will only include packages for the stable
-branch but the git will include RPM spec files for the decelopment branch and
+branch but the git will include RPM spec files for the development branch and
 will continue to maintain specific versions of spec files that are older than
 what is in the stable branch for a specific version of a dependence as well as
 matching source RPMs for the older version.
