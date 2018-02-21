@@ -15,7 +15,7 @@ When installing something via Composer, it brings in numerous packages from
 many different sources. These packages are not authenticated against
 cryptography signatures I have chosen to trust, and that scares me. I prefer
 actual package management (like RPM) where the packages must be signed by a
-source I have specifically chosen to trust to package the the dependency.
+source I have specifically chosen to trust to package the dependency.
 
 ### Dependency Maintenance Issue
 
@@ -147,6 +147,12 @@ not yet released as final packages.
 The purpose of the `custom` branch is to allow installation of class libraries
 and applications that are not generally released to the public through
 Composer.
+
+A system administrator can create a vendor directory within the `custom` branch
+and give write permission to that webmaster so the webmaster can easily put in
+custom libraries that will automatically be picked up by the autoloader, as
+long as the classes are properly namespaced and the `custom` branch is in the
+search path for the applications.
 
 Web applications can then specify what order they want the autoloader to search
 through the branches to find the class that is needed.
