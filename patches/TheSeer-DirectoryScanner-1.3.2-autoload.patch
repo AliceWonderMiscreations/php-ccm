@@ -1,0 +1,181 @@
+diff -Nur DirectoryScanner-1.3.2.orig/samples/pear-package.php DirectoryScanner-1.3.2/samples/pear-package.php
+--- DirectoryScanner-1.3.2.orig/samples/pear-package.php	2015-03-24 14:28:20.000000000 -0700
++++ DirectoryScanner-1.3.2/samples/pear-package.php	2018-02-23 07:56:52.418365353 -0800
+@@ -4,7 +4,12 @@
+     echo "usage: {$argv[0]} </path/to/package.xml> <directory>";
+ }
+ 
+-require __DIR__ . '/../autoload.php';
++require('/usr/share/ccm/ClassLoader.php');
++$CCM = new \CCM\ClassLoader();
++spl_autoload_register(function ($class) {
++  global $CCM;
++  $CCM->loadClass($class);
++});
+ 
+ $scanner = new \TheSeer\DirectoryScanner\DirectoryScanner;
+ 
+diff -Nur DirectoryScanner-1.3.2.orig/samples/sample.php DirectoryScanner-1.3.2/samples/sample.php
+--- DirectoryScanner-1.3.2.orig/samples/sample.php	2015-03-24 14:28:20.000000000 -0700
++++ DirectoryScanner-1.3.2/samples/sample.php	2018-02-23 07:55:22.875410283 -0800
+@@ -1,6 +1,10 @@
+ <?php
+-
+-  require __DIR__ . '/../autoload.php';
++  require('/usr/share/ccm/ClassLoader.php');
++  $CCM = new \CCM\ClassLoader();
++  spl_autoload_register(function ($class) {
++    global $CCM;
++    $CCM->loadClass($class);
++  });
+ 
+   $scanner = new \TheSeer\DirectoryScanner\DirectoryScanner;
+   $scanner->addInclude('*.php');
+@@ -10,3 +14,4 @@
+   foreach($scanner('.') as $i) {
+      var_dump($i);
+   }
++?>
+diff -Nur DirectoryScanner-1.3.2.orig/src/autoload.php DirectoryScanner-1.3.2/src/autoload.php
+--- DirectoryScanner-1.3.2.orig/src/autoload.php	2015-03-24 14:28:20.000000000 -0700
++++ DirectoryScanner-1.3.2/src/autoload.php	2018-02-23 07:50:36.586948367 -0800
+@@ -8,7 +8,7 @@
+         if ($classes === null) {
+             $classes = array(
+                 'theseer\\directoryscanner\\directoryscanner' => '/directoryscanner.php',
+-                'theseer\\directoryscanner\\exception' => '/directoryscanner.php',
++                'theseer\\directoryscanner\\exception' => '/exception.php',
+                 'theseer\\directoryscanner\\filesonlyfilteriterator' => '/filesonlyfilter.php',
+                 'theseer\\directoryscanner\\includeexcludefilteriterator' => '/includeexcludefilter.php',
+                 'theseer\\directoryscanner\\phpfilteriterator' => '/phpfilter.php'
+@@ -21,3 +21,4 @@
+     }
+ );
+ // @codeCoverageIgnoreEnd
++?>
+diff -Nur DirectoryScanner-1.3.2.orig/src/directoryscanner.php DirectoryScanner-1.3.2/src/directoryscanner.php
+--- DirectoryScanner-1.3.2.orig/src/directoryscanner.php	2015-03-24 14:28:20.000000000 -0700
++++ DirectoryScanner-1.3.2/src/directoryscanner.php	2018-02-23 07:49:10.956920720 -0800
+@@ -246,28 +246,5 @@
+         }
+ 
+     }
+-
+-    /**
+-     * DirectoryScanner Exception class
+-     *
+-     * @author     Arne Blankerts <arne@blankerts.de>
+-     * @copyright  Arne Blankerts <arne@blankerts.de>, All rights reserved.
+-     */
+-    class Exception extends \Exception {
+-
+-        /**
+-         * Error constant for "notFound" condition
+-         *
+-         * @var integer
+-         */
+-        const NotFound = 1;
+-
+-        /**
+-         *  Error condition for invalid flag passed to setFlag/unsetFlag method
+-         *
+-         * @var integer
+-         */
+-        const InvalidFlag = 2;
+-    }
+-
+ }
++?>
+diff -Nur DirectoryScanner-1.3.2.orig/src/exception.php DirectoryScanner-1.3.2/src/exception.php
+--- DirectoryScanner-1.3.2.orig/src/exception.php	1969-12-31 16:00:00.000000000 -0800
++++ DirectoryScanner-1.3.2/src/exception.php	2018-02-23 07:49:24.764602293 -0800
+@@ -0,0 +1,65 @@
++<?php
++/**
++ * Copyright (c) 2009-2014 Arne Blankerts <arne@blankerts.de>
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without modification,
++ * are permitted provided that the following conditions are met:
++ *
++ *   * Redistributions of source code must retain the above copyright notice,
++ *     this list of conditions and the following disclaimer.
++ *
++ *   * Redistributions in binary form must reproduce the above copyright notice,
++ *     this list of conditions and the following disclaimer in the documentation
++ *     and/or other materials provided with the distribution.
++ *
++ *   * Neither the name of Arne Blankerts nor the names of contributors
++ *     may be used to endorse or promote products derived from this software
++ *     without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
++ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT  * NOT LIMITED TO,
++ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
++ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER ORCONTRIBUTORS
++ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
++ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
++ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ * @package    DirectoryScanner
++ * @author     Arne Blankerts <arne@blankerts.de>
++ * @copyright  Arne Blankerts <arne@blankerts.de>, All rights reserved.
++ * @license    BSD License
++ * @link       http://github.com/theseer/DirectoryScanner
++ */
++
++namespace TheSeer\DirectoryScanner {
++
++    /**
++     * DirectoryScanner Exception class
++     *
++     * @author     Arne Blankerts <arne@blankerts.de>
++     * @copyright  Arne Blankerts <arne@blankerts.de>, All rights reserved.
++     */
++    class Exception extends \Exception {
++
++        /**
++         * Error constant for "notFound" condition
++         *
++         * @var integer
++         */
++        const NotFound = 1;
++
++        /**
++         *  Error condition for invalid flag passed to setFlag/unsetFlag method
++         *
++         * @var integer
++         */
++        const InvalidFlag = 2;
++    }
++
++}
++?>
+diff -Nur DirectoryScanner-1.3.2.orig/src/filesonlyfilter.php DirectoryScanner-1.3.2/src/filesonlyfilter.php
+--- DirectoryScanner-1.3.2.orig/src/filesonlyfilter.php	2015-03-24 14:28:20.000000000 -0700
++++ DirectoryScanner-1.3.2/src/filesonlyfilter.php	2018-02-23 07:49:37.612306007 -0800
+@@ -69,3 +69,4 @@
+     }
+ 
+ }
++?>
+diff -Nur DirectoryScanner-1.3.2.orig/src/includeexcludefilter.php DirectoryScanner-1.3.2/src/includeexcludefilter.php
+--- DirectoryScanner-1.3.2.orig/src/includeexcludefilter.php	2015-03-24 14:28:20.000000000 -0700
++++ DirectoryScanner-1.3.2/src/includeexcludefilter.php	2018-02-23 07:49:49.340035548 -0800
+@@ -109,3 +109,4 @@
+     }
+ 
+ }
++?>
+diff -Nur DirectoryScanner-1.3.2.orig/src/phpfilter.php DirectoryScanner-1.3.2/src/phpfilter.php
+--- DirectoryScanner-1.3.2.orig/src/phpfilter.php	2015-03-24 14:28:20.000000000 -0700
++++ DirectoryScanner-1.3.2/src/phpfilter.php	2018-02-23 07:50:02.291736865 -0800
+@@ -60,3 +60,4 @@
+     }
+ 
+ }
++?>
