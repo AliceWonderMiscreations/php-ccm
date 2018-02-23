@@ -43,7 +43,7 @@ URL: https://github.com/theseer/DirectoryScanner
 Source0: DirectoryScanner-%{version}.tar.gz
 
 #checksums
-Source20:	%{pkgvendor}-%{pkgname}-%{version}.sha256
+Source20: %{pkgvendor}-%{pkgname}-%{version}.sha256
 
 Patch0: TheSeer-DirectoryScanner-1.3.2-autoload.patch
 
