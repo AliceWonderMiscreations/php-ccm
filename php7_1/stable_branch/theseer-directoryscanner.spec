@@ -24,23 +24,23 @@
 %define ccmdelpkg /usr/share/ccm/bin/delComposerPackage
 
 %if 0%{?_local_build}
-Name:		php-ccm-%{pkgvendor}-%{pkgname}-local
+Name: php-ccm-%{pkgvendor}-%{pkgname}-local
 %define branch local
 %else
-Name:		php-ccm-%{pkgvendor}-%{pkgname}
+Name: php-ccm-%{pkgvendor}-%{pkgname}
 %define branch stable
 %endif
 %define pkginstalldir %{basedir}/%{branch}/libraries/%{pkgvendor}/%{pkgname}
 
-Version:	%{pkgversion}
-Release:	%{pkgsecurityv}.ccm.%{pkgtweakv}%{?pkgoptother}
-BuildArch:	noarch
-Summary:	A recursive directory scanner and filter
+Version: %{pkgversion}
+Release: %{pkgsecurityv}.ccm.%{pkgtweakv}%{?pkgoptother}
+BuildArch: noarch
+Summary: A recursive directory scanner and filter
 
-Group:		php/libraries
-License:	BSD-2-Clause
-URL:		https://github.com/theseer/DirectoryScanner
-Source0:	DirectoryScanner-%{version}.tar.gz
+Group: php/libraries
+License: BSD-2-Clause
+URL: https://github.com/theseer/DirectoryScanner
+Source0: DirectoryScanner-%{version}.tar.gz
 
 #checksums
 Source20:	%{pkgvendor}-%{pkgname}-%{version}.sha256
@@ -48,13 +48,13 @@ Source20:	%{pkgvendor}-%{pkgname}-%{version}.sha256
 Patch0: TheSeer-DirectoryScanner-1.3.2-autoload.patch
 
 Requires: php-ccm-filesystem
-Requires:	php(language) >= 5.3.1
+Requires: php(language) >= 5.3.1
 Requires(post): %{_bindir}/php
 Requires(post): %{ccmaddpkg}
 Requires(postun): %{_bindir}/php
 Requires(postun): %{ccmdelpkg}
 
-Provides:	php-ccm(%{pkgvendor}/%{pkgname}) = %{pkgversion}
+Provides: php-ccm(%{pkgvendor}/%{pkgname}) = %{pkgversion}
 
 %description
 This package needs an actual description written before release 1.ccm.1
