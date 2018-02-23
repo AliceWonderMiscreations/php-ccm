@@ -35,14 +35,20 @@ Should always be set to `%{_datadir}/ccm`
 * `_defaultdocdir`  
 Should always be set to `%{basedir}/doc`
 
-* `branchbase`  
-This is set to the `libraries` directory within the branch. For web
-applications (like Roundcube Mail) it would be set to the `applications`
-directory within the branch.
+* `branch`  
+This is set to the branch that the package is being built for, which will be
+either `local` or `stable` or `devel`. Generally the branch is defined by
+whether or not the `_local_build` build time macro is defined.
 
 * `pkginstalldir`  
-Should be defined to the a vendor/package directory within the `%{basedir}` and
-is a first level sub-directory of the `branchbase`.
+Should be defined to the a vendor/package directory within the `%{branch}` and
+is a first level sub-directory of the either `libraries` or `applications`.
+
+* `ccmaddpkg`  
+Should be defined as `/usr/share/ccm/bin/addComposerPackage`
+
+* `ccmdelpkg`  
+Should be defined as `/usr/share/ccm/bin/delComposerPackage`
 
 ### The lower case thing
 
@@ -88,12 +94,12 @@ This should almost always be defined within the following `%if` block:
 
     %if 0%{?_local_build}
     Name: php-ccm-%{pkgvendor}-%{pkgname}-local
-    %define branchbase %{basedir}/local/libraries
+    %define branch local
     %else
     Name: php-ccm-%{pkgvendor}-%{pkgname}
-    %define branchbase %{basedir}/stable/libraries
+    %define branch stable
     %endif
-    %define pkginstalldir %{branchbase}/%{pkgvendor}/%{pkgname}
+    %define pkginstalldir %{basedir}/%{branch}/libraries/%{pkgvendor}/%{pkgname}
 
 In the cases where a package is being built for the development branch, then
 the none local build should append `-devel` to the `Name` tag and the macro
@@ -246,13 +252,25 @@ Translations would be nice.
 
 ## Spec File Requires Tag
 
+All packages should require the `php-ccm-filesystem` package:
+
+    Requires: php-ccm-filesystem
+
 When specifying the version of PHP required, using
 
     Requires: php(language) >= x.y
 
-Generally is the best way to do it on RHEL/Fedora systems. I *hope* that the
-PHP packaging for other RPM based distributions use that provides syntax as
+Generally that is the best way to do it on RHEL/Fedora systems. I *hope* that
+the PHP packaging for other RPM based distributions use that provides syntax as
 well but I do not know.
+
+The spec file should require the scriptlets needed for the `%post` and
+`%postun` maintenance of the JSON database:
+
+    Requires(post): %{_bindir}/php
+    Requires(post): %{ccmaddpkg}
+    Requires(postun): %{_bindir}/php
+    Requires(postun): %{ccmdelpkg}
 
 Similar `Requires` syntax should be used for features of PHP that often require
 a module to be installed. For example, the `sabre/xml` `composer.json` file
@@ -476,6 +494,26 @@ exactly what this project was created to avoid.
 Developer files such as the `tests` directory should not be installed. Those
 who have need of the development environment for a package should just use
 Composer itself to get what they need.
+
+## The `%post` section of the RPM spec file
+
+It is important that the package be added to the JSON database:
+
+    %post
+    %{ccmaddpkg} %{branch} %{pkgvendor} %{pkgname} %{pkgversion} %{pkgsecurityv} %{pkgtweakv} || :
+    
+## The `%postun` section of the RPM spec file
+
+It is important that the package be removed from the JSON database on package deletion:
+
+    %postun
+    if [ "$1" -eq 0 ]; then
+        %{ccmdelpkg} %{branch} %{pkgvendor} %{pkgname} || :
+    fi
+
+Since RPM will run the `%postun` script on package update (the old version is
+being removed) the `if then` clause makes sure it is only deleted from the JSON
+database when it is not being replaced by a different version.
 
 ## The `%files` section of the RPM spec file
 
