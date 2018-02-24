@@ -1,5 +1,3 @@
-#This is an example spec file
-
 %define pkgvendor psr
 %define pkgname simplecache
 
@@ -50,7 +48,7 @@ Source20:       %{pkgvendor}-%{pkgname}-%{version}.sha256
 
 Patch0:         simple-cache-1.0.0-add-closing-tags.patch
 
-Requires: php-ccm-filesystem
+Requires:       php-ccm-filesystem
 Requires:       php(language) >= 5.3.0
 Requires(post): %{_bindir}/php
 Requires(post): %{ccmaddpkg}
@@ -79,6 +77,7 @@ as possible.
 ( cd %_sourcedir; sha256sum -c %{SOURCE20} )
 
 %setup -q -n simple-cache-%{version}
+%patch0 -p1
 find . -type f -print |while read file; do
   chmod 644 ${file}
 done
