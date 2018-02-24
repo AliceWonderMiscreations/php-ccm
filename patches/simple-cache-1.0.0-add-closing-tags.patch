@@ -1,0 +1,24 @@
+diff -ur simple-cache-1.0.0.orig/src/CacheException.php simple-cache-1.0.0/src/CacheException.php
+--- simple-cache-1.0.0.orig/src/CacheException.php	2017-01-02 05:31:39.000000000 -0800
++++ simple-cache-1.0.0/src/CacheException.php	2018-02-24 10:41:07.541381537 -0800
+@@ -8,3 +8,4 @@
+ interface CacheException
+ {
+ }
++?>
+diff -ur simple-cache-1.0.0.orig/src/CacheInterface.php simple-cache-1.0.0/src/CacheInterface.php
+--- simple-cache-1.0.0.orig/src/CacheInterface.php	2017-01-02 05:31:39.000000000 -0800
++++ simple-cache-1.0.0/src/CacheInterface.php	2018-02-24 10:41:20.236081771 -0800
+@@ -112,3 +112,4 @@
+      */
+     public function has($key);
+ }
++?>
+diff -ur simple-cache-1.0.0.orig/src/InvalidArgumentException.php simple-cache-1.0.0/src/InvalidArgumentException.php
+--- simple-cache-1.0.0.orig/src/InvalidArgumentException.php	2017-01-02 05:31:39.000000000 -0800
++++ simple-cache-1.0.0/src/InvalidArgumentException.php	2018-02-24 10:41:31.846807601 -0800
+@@ -11,3 +11,4 @@
+ interface InvalidArgumentException extends CacheException
+ {
+ }
++?>
